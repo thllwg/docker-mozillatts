@@ -51,21 +51,22 @@ def tts(model, text, CONFIG, use_cuda: bool, ap, use_gl: bool):
 use_cuda = False
 
 # model paths
-TTS_MODEL = _DIR / "model" / "checkpoint_130000.pth.tar"
+TTS_MODEL = _DIR / "model" / "best_model.pth.tar"
 TTS_CONFIG = _DIR / "model" / "config.json"
-VOCODER_MODEL = _DIR / "vocoder" / "checkpoint_1450000.pth.tar"
-VOCODER_CONFIG = _DIR / "vocoder" / "config.json"
+TTS_SPEAKERS = _DIR / "model" / "speakers.json"
+#VOCODER_MODEL = _DIR / "vocoder" / "best_model.pth.tar"
+#VOCODER_CONFIG = _DIR / "vocoder" / "config.json"
 
 # load configs
 TTS_CONFIG = load_config(TTS_CONFIG)
-VOCODER_CONFIG = load_config(VOCODER_CONFIG)
+#VOCODER_CONFIG = load_config(VOCODER_CONFIG)
 
 # load the audio processor
 ap = AudioProcessor(**TTS_CONFIG.audio)
 
 # LOAD TTS MODEL
 # multi speaker
-speaker_id = None
+speaker_id = 1
 speakers = []
 
 # load the model
@@ -87,16 +88,16 @@ if "r" in cp:
     model.decoder.set_r(cp["r"])
 
 # LOAD VOCODER MODEL
-vocoder_model = setup_generator(VOCODER_CONFIG)
-vocoder_model.load_state_dict(torch.load(VOCODER_MODEL, map_location="cpu")["model"])
-vocoder_model.remove_weight_norm()
-vocoder_model.inference_padding = 0
+#vocoder_model = setup_generator(VOCODER_CONFIG)
+#vocoder_model.load_state_dict(torch.load(VOCODER_MODEL, map_location="cpu")["model"])
+#vocoder_model.remove_weight_norm()
+#vocoder_model.inference_padding = 0
 
-ap_vocoder = AudioProcessor(**VOCODER_CONFIG["audio"])
-if use_cuda:
-    vocoder_model.cuda()
+#ap_vocoder = AudioProcessor(**VOCODER_CONFIG["audio"])
+#if use_cuda:
+#    vocoder_model.cuda()
 
-vocoder_model.eval()
+#vocoder_model.eval()
 
 # -----------------------------------------------------------------------------
 
